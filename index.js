@@ -1,142 +1,158 @@
-//packages needed for this application
-const inquirer = require('inquirer');
 const fs = require('fs');
-const util = require('util');
+const inquirer = require('inquirer');
+const generateMarkdown = require('./utils/generateMarkdown.js');
 
-const writeFileAsync = util.promisify(fs.writeFile);
-// read me questions--user input
-const questions = () =>
-    inquirer.prompt([{
-            type: 'input',
-            message: 'Project Title',
-            name: 'title'
-                //     validate: (value) => {
-                //         if (value) {
-                //             return true
-                //         } else {
-                //             return 'i need a value to continue'
-                //         }
-                //     },
-                // },
-                // {
-                //     type: "input",
-                //     message: "Table of Contents",
-                //     name: "contents",
-                //     // validate: (value) => {
-                //     //     if (value) {
-                //     //         return true
-                //     //     } else {
-                //     //         return 'i need a value to continue'
-                //     //     }
-                //     },
-        },
-        {
-            type: 'input',
-            message: 'Description',
-            name: 'info'
-                // validate: (value) => {
-                //     if (value) {
-                //         return true
-                //     } else {
-                //         return 'i need a value to continue'
-                // }
-                // },
-        },
-        {
-            type: 'input',
-            message: 'Installation Instructions',
-            name: 'install'
-                // validate: (value) => {
-                //     if (value) {
-                //         return true
-                //     } else {
-                //         return 'i need a value to continue'
-                //     }
-                // },
-        },
-        {
-            type: 'input',
-            message: 'Usage Information',
-            name: 'usage'
-                // validate: (value) => {
-                //     if (value) {
-                //         return true
-                //     } else {
-                //         return 'i need a value to continue'
-                //     }
-                // },
-        },
-        {
-            //small list of licenses
-            type: 'list',
-            message: 'License: Choose from the following: ',
-            name: 'license',
-            choices: ['apache-2.0', 'The MIT License', 'GNU license', 'The Unlicense', 'N/A']
-                // validate: (value) => {
-                //     if (value) {
-                //         return true
-                //     } else {
-                //         return 'i need a value to continue'
-                //     }
-                // },
-        },
-        {
-            type: 'input',
-            message: 'Author/ Contributors',
-            name: 'contributions'
-                // validate: (value) => {
-                //     if (value) {
-                //         return true
-                //     } else {
-                //         return 'i need a value to continue'
-                //     }
-                // },
-        },
-        {
-            type: 'input',
-            message: 'Tests',
-            name: 'check'
-                // validate: (value) => {
-                //     if (value) {
-                //         return true
-                //     } else {
-                //         return 'i need a value to continue'
-                //     }
-                // },
-        },
+// questions array accessed with inquirer
+const questions = [{
+        type: 'input',
+        name: 'title',
+        message: 'Title of your project',
+        validate: titleInput => {
+            if (titleInput) {
+                return true;
+            } else {
+                console.log('Please enter a project title');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'list',
+        name: 'license',
+        message: 'Pick the license that is associated with your project.',
+        choices: ['Apache 2.0', 'MIT', 'GPL v3.0', 'MPL-2.0'],
+        validate: licenseInput = () => {
+            if (licenseInput) {
+                return true;
+            } else {
+                console.log('Please select one of the four options')
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'description',
+        message: 'Please give a minor description of what this app does.',
+        validate: descriptionInput => {
+            if (descriptionInput) {
+                return true;
+            } else {
+                console.log('Include a short description of the app.');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'installation',
+        message: 'How to install the app?',
+        validate: installationInput => {
+            if (installationInput) {
+                return true;
+            } else {
+                console.log('Installation steps');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'usage',
+        message: 'What is the use of your project?',
+        validate: usageInput => {
+            if (usageInput) {
+                return true;
+            } else {
+                console.log('Please provide a use for your project');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'contributions',
+        message: 'The appropriate procedures to contributing towards this app.',
+        validate: contributionsInput => {
+            if (contributionsInput) {
+                return true;
+            } else {
+                console.log('How to contribute your ideas and/or fixes?');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'tests',
+        message: 'How do you test this project?',
+        validate: testingInput => {
+            if (testingInput) {
+                return true;
+            } else {
+                console.log('Testing precedure');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'askMe',
+        message: 'Provide your Github username for contacting you regarding questions and other concerns.',
+        validate: githubInput => {
+            if (githubInput) {
+                return true;
+            } else {
+                console.log('Please provide your username so others can reach out to you with questions');
+                return false;
+            }
+        }
+    },
+    {
+        type: 'input',
+        name: 'email',
+        message: 'Please provide an email as a secondary way to contact you.',
+        validate: emailInput => {
+            if (emailInput) {
+                return true;
+            } else {
+                console.log('Provide email');
+                return false;
+            }
+        }
+    }
+];
 
-        function generateMD(data) {
-            return `# ${data.title}
-    $(badge)
-    ${data.description}
-    ## Table of Contents:
-    * [Installation](#installation)
-    * [Usage](#usage)
-    * [License](#license)
-    * [Contributions](#contributions)
-    * [Tests],(#tests)
-    * [Questions](#questions)
-    ### Installation:
-    To get the correct dependencies, open the console and run the following: 
-    \`\`\`${data.installations}\`\`\`
-    ### Usage:
-    ${data.usage}
-    ### License:
-    Licensed by: ${data.license}
-    ### Contributing:
-    ${(data.contribute, data.author)}
-    ### Tests:
-    To test, open console and run the following:
-    \`\`\`${data.tests}\`\`\`
-    ### Questions:
-    Having trouble? Feel free to contact me, ${data.author} via ${data.email}
-    or if you're just feeling the need see my other projects 
-    I have on my Github, simply click here:(https://github.com/${data.username}
-    `;
-        },
 
-        questions()
-        .then((data) => writeFileAsync('generatedREADME.md', generateMD(data)))
-        .then(() => console.log('README.md has been successfully generated!'))
-        .catcher((err) => console.error(err))
-    ]);
+
+
+// function to write README file
+const writeToFile = fileContent => {
+    return new Promise((resolve, reject) => {
+        fs.writeFile('./generatedREADME.md', fileContent, err => {
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve({
+                ok: true
+            });
+        });
+    });
+};
+
+// function to initialize app
+function init() {
+    inquirer.prompt(questions)
+        .then(function(answer) {
+            console.log(answer);
+            var fileContent = generateMarkdown(answer);
+            writeToFile(fileContent)
+        });
+}
+
+// Function call to initialize app
+init();
+
+// exports
+module.exports = questions;

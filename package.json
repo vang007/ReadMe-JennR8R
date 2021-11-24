@@ -1,25 +1,22 @@
 {
-    "name": "readme-jennr8r",
-    "version": "1.0.0",
-    "description": "an app that generates a README.MD file for your repositories r ",
-    "main": "index.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "node index.js"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/vang007/ReadMe-JennR8R.git"
-    },
-    "author": "Sua Vang",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/vang007/ReadMe-JennR8R/issues"
-    },
-    "homepage": "https://github.com/vang007/ReadMe-JennR8R#readme",
-    "dependencies": {
-        "inquirer": "^8.2.0"
-    },
-    "devDependencies": {},
-    "keywords": []
+  "name": "readme-jennr8r",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vang007/ReadMe-JennR8R.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vang007/ReadMe-JennR8R/issues"
+  },
+  "homepage": "https://github.com/vang007/ReadMe-JennR8R#readme",
+  "dependencies": {
+    "inquirer": "^8.2.0"
+  }
 }
